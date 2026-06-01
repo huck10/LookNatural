@@ -541,6 +541,30 @@ namespace NetcodePlus
             Debug.Log("Spawn Player: " + client.user_id + " " + client.username + " " + client.player_id);
 
             GameObject player_obj = Instantiate(prefab, pos, Quaternion.Euler(rot));
+
+            //yukim add
+            PlayerVisual playerVisual = player_obj.GetComponent<PlayerVisual>();
+            if (playerVisual != null)
+            {
+                bool isProp = Random.value < 0.5f;
+
+                if (isProp)
+                {
+                    Debug.Log("prop!");
+                    playerVisual.SetAsProp();
+                }
+                else
+                {
+                    Debug.Log("player!");
+                    playerVisual.SetAsPlayer();
+                }
+            }
+            else
+            {
+                Debug.Log("PlayerVisual cannot find!");
+            }
+            //yukim add
+
             SNetworkObject player = player_obj.GetComponent<SNetworkObject>();
             players_list[client_id] = player;
             onBeforePlayerSpawn?.Invoke(client.player_id, player);
@@ -568,6 +592,7 @@ namespace NetcodePlus
             Debug.Log("Spawn Player: " + client.user_id + " " + client.username + " " + client.player_id);
 
             GameObject player_obj = Instantiate(prefab, pos, prefab.transform.rotation);
+
             SNetworkObject player = player_obj.GetComponent<SNetworkObject>();
             players_list[client_id] = player;
             onBeforePlayerSpawn?.Invoke(client.player_id, player);
@@ -674,6 +699,8 @@ namespace NetcodePlus
                 client_ready_list.Add(client_id);
                 SpawnClientObjects(client_id);
                 SpawnPlayer(client_id);
+
+                Debug.Log("Spawning");
                 onClientReady?.Invoke(client_id);
             }
         }
