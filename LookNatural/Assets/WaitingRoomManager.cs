@@ -3,9 +3,10 @@ using NetcodePlus.Demo;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
-public class WaitingRoomManager : MonoBehaviour
+public class WaitingRoomManager : NetworkBehaviour
 {
     public GameObject waitPanel;
     public int maxPlayerNeeded = 2;
@@ -20,32 +21,26 @@ public class WaitingRoomManager : MonoBehaviour
 
     private void Update()
     {
-        if(playersUIText == null || waitPanel == null)
-        {
-            Debug.Log("empty reference in Update()!");
-            return;
-        }
-
         if (!TheNetwork.Get().IsServer)
-        {
-            Debug.Log("not server!");
             return;
-        }
 
         timer += Time.deltaTime;
         if (timer < 2f)
-        {
             return;
-        }
 
         timer = 0f;
 
         int count = GameData.Get().CountConnected();
-        int max = NetworkData.Get().players_max;
 
+        UpdateLobbyUIClientRpc(count, count >= maxPlayerNeeded);
+    }
+
+    [ClientRpc]
+    void UpdateLobbyUIClientRpc(int count, bool isFull)
+    {
         playersUIText.text = "lobby: " + count;
 
-        if(count >= maxPlayerNeeded)
+        if (isFull)
         {
             waitPanel.SetActive(false);
         }
