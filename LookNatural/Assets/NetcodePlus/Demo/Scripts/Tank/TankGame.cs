@@ -37,7 +37,7 @@ namespace NetcodePlus.Demo
                     spawns[i].player_id = i;
             }
 
-            BlackPanel.Get().Show(true);
+            //BlackPanel.Get().Show(true);
         }
 
         protected override void OnReady()
