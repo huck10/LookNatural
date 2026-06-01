@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Collections;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
@@ -85,6 +86,10 @@ namespace NetcodePlus
 
         private const string listen_all = "0.0.0.0";
         private const int msg_size = 1024 * 1024 * 100;
+
+        //add
+        private bool matchStarted = false;
+        private int maxPlayers = 2;
 
         void Awake()
         {
@@ -520,6 +525,9 @@ namespace NetcodePlus
             }
         }
 
+        //Added
+
+        //step3
         public void SpawnPlayer(ulong client_id)
         {
             if (!IsServer)
@@ -539,38 +547,55 @@ namespace NetcodePlus
                 return;
 
             Debug.Log("Spawn Player: " + client.user_id + " " + client.username + " " + client.player_id);
-
             GameObject player_obj = Instantiate(prefab, pos, Quaternion.Euler(rot));
-
-            //yukim add
-            PlayerVisual playerVisual = player_obj.GetComponent<PlayerVisual>();
-            if (playerVisual != null)
-            {
-                bool isProp = Random.value < 0.5f;
-
-                if (isProp)
-                {
-                    Debug.Log("prop!");
-                    playerVisual.SetAsProp();
-                }
-                else
-                {
-                    Debug.Log("player!");
-                    playerVisual.SetAsPlayer();
-                }
-            }
-            else
-            {
-                Debug.Log("PlayerVisual cannot find!");
-            }
-            //yukim add
-
             SNetworkObject player = player_obj.GetComponent<SNetworkObject>();
             players_list[client_id] = player;
             onBeforePlayerSpawn?.Invoke(client.player_id, player);
             player.Spawn(client_id);
             onSpawnPlayer?.Invoke(client.player_id, player);
         }
+
+        //Step2
+        private void PickHunter()
+        {
+            List<ClientData> clients = client_list.Values.ToList();
+
+            if (clients.Count == 0)
+                return;
+
+            // everyone starts as prop
+            foreach (var c in clients)
+                c.isProp = true;
+
+            // pick hunter
+            int index = Random.Range(0, clients.Count);
+            clients[index].isProp = false;
+        }
+
+        //Step1
+        private void TriggerReadyPlayer(ulong client_id)
+        {
+            if (!IsServer || local_state != ClientState.Ready)
+                return;
+
+            Debug.Log("Client is Ready:" + client_id);
+            client_ready_list.Add(client_id);
+            SpawnClientObjects(client_id);
+
+            if (!matchStarted && client_ready_list.Count >= maxPlayers)
+            {
+                matchStarted = true;
+                PickHunter();
+                foreach (var c in client_list.Values)
+                {
+                    SpawnPlayer(c.client_id);
+                }
+            }
+
+            onClientReady?.Invoke(client_id);
+        }
+        //Added
+
 
         //Use this function to spawn player manually (return null from the findPlayerPrefab event to prevent spawning automatically)
         //This function will only work if the player_id has already been assigned (after ready was called)
@@ -594,6 +619,16 @@ namespace NetcodePlus
             GameObject player_obj = Instantiate(prefab, pos, prefab.transform.rotation);
 
             SNetworkObject player = player_obj.GetComponent<SNetworkObject>();
+
+            PlayerVisual visual = player_obj.GetComponent<PlayerVisual>();
+            if (client.isProp)
+            {
+                visual.SetAsProp();
+            }
+            else
+            {
+                visual.SetAsPlayer();
+            }
             players_list[client_id] = player;
             onBeforePlayerSpawn?.Invoke(client.player_id, player);
             player.Spawn(client_id);
@@ -691,20 +726,32 @@ namespace NetcodePlus
         }
 
         //This will be triggered when both the server and the player are ready
-        private void TriggerReadyPlayer(ulong client_id)
-        {
-            if (IsServer && local_state == ClientState.Ready)
-            {
-                Debug.Log("Client is Ready:" + client_id);
-                client_ready_list.Add(client_id);
-                SpawnClientObjects(client_id);
-                SpawnPlayer(client_id);
+        //private void TriggerReadyPlayer(ulong client_id)
+        //{
+        //    if (IsServer && local_state == ClientState.Ready)
+        //    {
+        //        Debug.Log("Client is Ready:" + client_id);
+        //        client_ready_list.Add(client_id);
+        //        SpawnClientObjects(client_id);
 
-                Debug.Log("Spawning");
-                onClientReady?.Invoke(client_id);
-            }
-        }
+        //        if(client_ready_list.Count >= 2)
+        //        {
+        //            PickHunter();
 
+        //            foreach (var c in client_list.Values)
+        //            {
+        //                SpawnPlayer(c.client_id);
+        //            }
+
+        //        }
+        //        //SpawnPlayer(client_id);
+
+        //        Debug.Log("Spawning");
+        //        onClientReady?.Invoke(client_id);
+        //    }
+        //}
+
+       
         private void CheckIfReady()
         {
             if (local_state != ClientState.Connecting || !IsConnected())
@@ -1241,6 +1288,9 @@ namespace NetcodePlus
         public bool data_received;  //Data was received from this user
         public ClientState state = ClientState.Offline;
         public byte[] extra = new byte[0];
+
+        //yukim add
+        public bool isProp;
 
         public ClientData() { }
         public ClientData(ulong client_id)

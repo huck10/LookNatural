@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerVisual : MonoBehaviour
-{
-    
+{   
     public GameObject playerModel;
     public GameObject propModel;
-
     public void SetAsPlayer()
     {
         playerModel.SetActive(true);
@@ -19,4 +18,4 @@ public class PlayerVisual : MonoBehaviour
         playerModel.SetActive(false);
         propModel.SetActive(true);
     }
- }
+}
