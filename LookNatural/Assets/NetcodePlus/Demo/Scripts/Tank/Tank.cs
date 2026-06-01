@@ -272,7 +272,7 @@ namespace NetcodePlus.Demo
             if (attack_timer > attack_cooldown)
             {
                 attack_timer = 0f;
-                animator.SetTrigger("shoot");
+                if (animator != null) animator.SetTrigger("shoot");
                 GameObject bobj = Instantiate(attack_bullet, shoot_root.position, Quaternion.identity);
                 TankBullet bullet = bobj.GetComponent<TankBullet>();
                 bullet.direction = dir;

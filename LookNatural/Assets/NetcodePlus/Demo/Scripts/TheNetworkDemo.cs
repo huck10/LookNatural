@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.Events;
+using TMPro;
 
 namespace NetcodePlus.Demo
 {
@@ -12,9 +13,12 @@ namespace NetcodePlus.Demo
 
     public class TheNetworkDemo : MonoBehaviour
     {
+
         public DemoData data;
 
         private static TheNetworkDemo instance;
+
+
 
         private void Awake()
         {
@@ -25,6 +29,7 @@ namespace NetcodePlus.Demo
 
         private void Start()
         {
+
             TheNetwork network = TheNetwork.Get();
             network.onConnect += OnConnect;
             network.checkApproval += OnApprove;
@@ -38,6 +43,8 @@ namespace NetcodePlus.Demo
             if (network.IsConnected())
                 OnConnect(); //Run now if already connected
         }
+
+      
 
         void OnDestroy()
         {
