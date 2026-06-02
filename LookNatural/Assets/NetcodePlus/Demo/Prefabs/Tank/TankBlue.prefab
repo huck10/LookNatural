@@ -13,12 +13,12 @@ GameObject:
   - component: {fileID: 2782902656488347655}
   - component: {fileID: 8445073870349708316}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: HunterBlue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1717494563732750661
 Transform:
   m_ObjectHideFlags: 0
@@ -217,6 +217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 443f570c4db857542985e140d264b155, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerVisual: {fileID: 2534125700818358292}
   auto_spawn: 0
   network_id: 8505915133047488466
   prefab_id: 8505915133047488466
@@ -292,12 +293,12 @@ GameObject:
   - component: {fileID: 2545508787276499917}
   - component: {fileID: 2733281059389369506}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: PropBlue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1545188162275626913
 Transform:
   m_ObjectHideFlags: 0
@@ -341,7 +342,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 464dff348b7969648ac2254053507594, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

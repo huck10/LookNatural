@@ -90,6 +90,8 @@ namespace NetcodePlus
         //add
         private bool matchStarted = false;
         private int maxPlayers = 2;
+        private Dictionary<ulong, bool> pendingRoles = new();
+
 
         void Awake()
         {
@@ -104,6 +106,10 @@ namespace NetcodePlus
             DontDestroyOnLoad(gameObject);
         }
 
+        private void Start()
+        {
+            messaging.ListenMsg("role", OnReceiveRole);
+        }
         public void Init()
         {
             if (!inited || transport == null)
@@ -552,25 +558,53 @@ namespace NetcodePlus
             players_list[client_id] = player;
             onBeforePlayerSpawn?.Invoke(client.player_id, player);
             player.Spawn(client_id);
+
+            ClientRpcParams rpcParams = new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { client_id }
+                }
+            };
+
+            //add
+            //Debug.Log($"Sending role to {client_id}, isProp={client.isProp}");
+            messaging.SendInt("role", client_id, client.isProp ? 1 : 0, NetworkDelivery.Reliable);
+            //add
+
             onSpawnPlayer?.Invoke(client.player_id, player);
         }
 
-        //Step2
-        private void PickHunter()
+        private void OnReceiveRole(ulong sender, FastBufferReader reader)
         {
-            List<ClientData> clients = client_list.Values.ToList();
+            reader.ReadValueSafe(out int value);
+            bool isProp = value == 1;
 
-            if (clients.Count == 0)
+            PlayerVisual visual = FindObjectOfType<PlayerVisual>();
+            if (visual == null)
                 return;
-
-            // everyone starts as prop
-            foreach (var c in clients)
-                c.isProp = true;
-
-            // pick hunter
-            int index = Random.Range(0, clients.Count);
-            clients[index].isProp = false;
+            if (isProp)
+                visual.SetAsProp();
+            else
+                visual.SetAsPlayer();
         }
+
+        //Step2
+        //private void PickHunter()
+        //{
+        //    List<ClientData> clients = client_list.Values.ToList();
+
+        //    if (clients.Count == 0)
+        //        return;
+
+        //    // everyone starts as prop
+        //    foreach (var c in clients)
+        //        c.isProp = true;
+
+        //    // pick hunter
+        //    int index = Random.Range(0, clients.Count);
+        //    clients[index].isProp = false;
+        //}
 
         //Step1
         private void TriggerReadyPlayer(ulong client_id)
@@ -582,17 +616,26 @@ namespace NetcodePlus
             client_ready_list.Add(client_id);
             SpawnClientObjects(client_id);
 
-            if (!matchStarted && client_ready_list.Count >= maxPlayers)
-            {
-                matchStarted = true;
-                PickHunter();
-                foreach (var c in client_list.Values)
-                {
-                    SpawnPlayer(c.client_id);
-                }
-            }
-
+            //if (!matchStarted && client_ready_list.Count >= maxPlayers)
+            //{
+            //    matchStarted = true;
+            //    PickHunter();
+            //    foreach (var c in client_list.Values)
+            //    {
+            //        SpawnPlayer(c.client_id);
+            //    }
+            //}
+            AssignRole(client_id);
+            SpawnPlayer(client_id);
             onClientReady?.Invoke(client_id);
+        }
+
+        private void AssignRole(ulong client_id)
+        {
+            ClientData client = GetClient(client_id);
+            if (client == null) return;
+
+            client.isProp = Random.value > 0.5f;
         }
         //Added
 
@@ -619,16 +662,6 @@ namespace NetcodePlus
             GameObject player_obj = Instantiate(prefab, pos, prefab.transform.rotation);
 
             SNetworkObject player = player_obj.GetComponent<SNetworkObject>();
-
-            PlayerVisual visual = player_obj.GetComponent<PlayerVisual>();
-            if (client.isProp)
-            {
-                visual.SetAsProp();
-            }
-            else
-            {
-                visual.SetAsPlayer();
-            }
             players_list[client_id] = player;
             onBeforePlayerSpawn?.Invoke(client.player_id, player);
             player.Spawn(client_id);

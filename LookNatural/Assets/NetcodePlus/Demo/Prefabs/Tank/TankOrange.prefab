@@ -67,12 +67,12 @@ GameObject:
   - component: {fileID: 5821568503994885307}
   - component: {fileID: 7719708631468597177}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: PropOrange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3797828102728788629
 Transform:
   m_ObjectHideFlags: 0
@@ -116,7 +116,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 55d64f5c8aded4446b64c68ca5182afc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -300,6 +300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 443f570c4db857542985e140d264b155, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerVisual: {fileID: 4479590100056206072}
   auto_spawn: 0
   network_id: 10546674277092127109
   prefab_id: 10546674277092127109
@@ -398,12 +399,12 @@ GameObject:
   - component: {fileID: 2931610144225660871}
   - component: {fileID: 1495834608337845760}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: HunterOrange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4915840285972591826
 Transform:
   m_ObjectHideFlags: 0

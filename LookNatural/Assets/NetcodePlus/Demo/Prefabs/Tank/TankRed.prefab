@@ -110,6 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 443f570c4db857542985e140d264b155, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerVisual: {fileID: 8012505696654163754}
   auto_spawn: 0
   network_id: 2155293736540361236
   prefab_id: 2155293736540361236
@@ -154,12 +155,12 @@ GameObject:
   - component: {fileID: 1257286451336118081}
   - component: {fileID: 890982514222011765}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: HunterRed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8788796611367781775
 Transform:
   m_ObjectHideFlags: 0
@@ -261,12 +262,12 @@ GameObject:
   - component: {fileID: 7426686341419445873}
   - component: {fileID: 1063163984390717506}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: PropRed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2097175407156708815
 Transform:
   m_ObjectHideFlags: 0
@@ -310,7 +311,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: ed4292104e22cfb4989a2b186c5c4222, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

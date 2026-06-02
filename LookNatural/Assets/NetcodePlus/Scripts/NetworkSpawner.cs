@@ -151,6 +151,24 @@ namespace NetcodePlus
                 spawn.rot = nobj.transform.rotation;
                 spawn.extra = nobj.WriteBehaviorSpawnData();
                 spawn_list.Enqueue(spawn);
+
+                //PlayerVisual visual = nobj.GetComponent<PlayerVisual>();
+                //if(visual == null)
+                //{
+                //    Debug.Log("no PlayerVisuals!");
+                //    return;
+                //}
+
+                //if (isProp)
+                //{
+                //    Debug.Log("prop");
+                //    visual.SetAsProp();
+                //}
+                //else
+                //{
+                //    Debug.Log("player");
+                //    visual.SetAsPlayer();
+                //}
             }
         }
 

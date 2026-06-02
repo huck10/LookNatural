@@ -7,15 +7,19 @@ public class PlayerVisual : MonoBehaviour
 {   
     public GameObject playerModel;
     public GameObject propModel;
+
+
     public void SetAsPlayer()
     {
         playerModel.SetActive(true);
         propModel.SetActive(false);
+        NetworkMessenger.Instance.PrintIfProp(false);
     }
 
     public void SetAsProp()
     {
         playerModel.SetActive(false);
         propModel.SetActive(true);
+        NetworkMessenger.Instance.PrintIfProp(true);
     }
 }

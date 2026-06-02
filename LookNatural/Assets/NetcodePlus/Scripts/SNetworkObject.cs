@@ -14,6 +14,8 @@ namespace NetcodePlus
 
     public class SNetworkObject : MonoBehaviour
     {
+        [SerializeField] PlayerVisual playerVisual;
+
         public AutoSpawnType auto_spawn;        //Object will be spawned automatically when client is Ready
         [ReadOnly] public ulong network_id = 0;            //ID to access the instantiated object, this id should match on all clients/server
         [ReadOnly] public ulong prefab_id = 0;             //ID to access the prefab of this object, this id should match on all clients/server
@@ -124,6 +126,12 @@ namespace NetcodePlus
 
         public virtual void Spawn(ulong owner)
         {
+            if(playerVisual == null)
+            {
+                Debug.Log("no PlayerVisuals!");
+                return;
+            }
+
             if (is_destroying)
                 return; //Object already being destroyed
 
@@ -132,6 +140,7 @@ namespace NetcodePlus
 
             if (IsServer && !IsSpawned)
             {
+
                 //Debug.Log("Spawn " +gameObject.name);
                 this.owner = owner;
                 is_spawned = true;
